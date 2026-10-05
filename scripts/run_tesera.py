@@ -28,6 +28,9 @@ def main():
     ap.add_argument("--no_tumor_cleanup", action="store_true",
                     help="Disable debris/thin-structure cleanup of tumor tiles "
                          "(enabled by default).")
+    ap.add_argument("--no_tumor_filter", action="store_true",
+                    help="Disable filtering of non-tumor tiles; use all tiles "
+                         "for slide embedding (filtering enabled by default).")
     ap.add_argument("--window_tiles", type=int, default=5,
                     help="Occlusion window size in tiles (default: 5).")
     ap.add_argument("--occlusion_batch_size", type=int, default=8,
@@ -63,14 +66,16 @@ def main():
             do_occlusion=args.occlusion, smooth=not args.no_smooth,
             apply_cleanup=not args.no_tumor_cleanup,
             window_tiles=args.window_tiles,
-            occlusion_batch_size=args.occlusion_batch_size, device=device)
+            occlusion_batch_size=args.occlusion_batch_size, device=device,
+            tumor_filter=not args.no_tumor_filter)
     else:
         out = pipeline.run(
             svs_files=svs_files, out_dir=args.out_dir, work_dir=args.work_dir,
             do_occlusion=args.occlusion, smooth=not args.no_smooth,
             apply_cleanup=not args.no_tumor_cleanup,
             window_tiles=args.window_tiles,
-            occlusion_batch_size=args.occlusion_batch_size, device=device)
+            occlusion_batch_size=args.occlusion_batch_size, device=device,
+            tumor_filter=not args.no_tumor_filter)
 
     if out:
         print("\nDone. Outputs:")

@@ -51,6 +51,7 @@ Common options:
 ```
 --out_dir DIR     output directory (required)
 --occlusion       additionally compute per-slide occlusion risk heatmaps
+--no_tumor_filter use all tiles for slide embedding
 --device DEVICE   compute device, e.g. cuda or cpu (default: cuda if available)
 ```
 

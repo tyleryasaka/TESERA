@@ -39,7 +39,8 @@ def run_tile(svs_files, out_dir, work_dir=None, device=None):
 
 def run_analyze(svs_files, out_dir, work_dir=None,
                 do_occlusion=False, smooth=True, apply_cleanup=True,
-                window_tiles=5, occlusion_batch_size=8, device=None):
+                window_tiles=5, occlusion_batch_size=8, device=None,
+                tumor_filter=True):
     import pandas as pd
     from .model import TESERAModel
     from .tile_embedding import _extract_slide_id
@@ -54,7 +55,8 @@ def run_analyze(svs_files, out_dir, work_dir=None,
     os.makedirs(tumor_dir, exist_ok=True)
 
     model = TESERAModel()
-    classifier = load_classifier(config.param_path("tumor_classifier"))
+    classifier = (load_classifier(config.param_path("tumor_classifier"))
+                  if tumor_filter else None)
 
     results = []
     for svs in svs_files:
@@ -65,10 +67,13 @@ def run_analyze(svs_files, out_dir, work_dir=None,
                   "(run the 'tile' stage first); skipping")
             continue
 
-        pred_csv = classify_slide(sid, work_dir, classifier, tumor_dir,
-                                  smooth=smooth, apply_cleanup=apply_cleanup)
-        if pred_csv is None:
-            continue
+        if tumor_filter:
+            pred_csv = classify_slide(sid, work_dir, classifier, tumor_dir,
+                                      smooth=smooth, apply_cleanup=apply_cleanup)
+            if pred_csv is None:
+                continue
+        else:
+            pred_csv = None  # use all tiles
 
         slide_emb = embed_slide_level(sid, work_dir, pred_csv, device=device)
         if slide_emb is None:
@@ -112,7 +117,8 @@ def run_analyze(svs_files, out_dir, work_dir=None,
             occ_dir = os.path.join(out_dir, "occlusion")
             scored_ids = [r.sample for r in results]
             for sid in scored_ids:
-                pred_csv = os.path.join(tumor_dir, f"{sid}_tile_predictions.csv")
+                pred_csv = (os.path.join(tumor_dir, f"{sid}_tile_predictions.csv")
+                            if tumor_filter else None)
                 occlude_slide(sid, work_dir, pred_csv, model, occ_dir,
                               device=device, batch_size=occlusion_batch_size,
                               window_tiles=window_tiles)
@@ -129,10 +135,11 @@ def run_analyze(svs_files, out_dir, work_dir=None,
 
 def run(svs_files, out_dir, work_dir=None,
         do_occlusion=False, smooth=True, apply_cleanup=True, window_tiles=5,
-        occlusion_batch_size=8, device=None):
+        occlusion_batch_size=8, device=None, tumor_filter=True):
     work_dir = _resolve_work_dir(out_dir, work_dir)
     run_tile(svs_files, out_dir, work_dir=work_dir, device=device)
     return run_analyze(svs_files, out_dir, work_dir=work_dir,
                        do_occlusion=do_occlusion, smooth=smooth,
                        apply_cleanup=apply_cleanup, window_tiles=window_tiles,
-                       occlusion_batch_size=occlusion_batch_size, device=device)
+                       occlusion_batch_size=occlusion_batch_size, device=device,
+                       tumor_filter=tumor_filter)
