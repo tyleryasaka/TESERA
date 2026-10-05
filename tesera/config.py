@@ -7,11 +7,11 @@ TARGET_MPP = 0.5
 TARGET_TILE_PX = 256
 PATCH_SIZE_MICRONS = TARGET_TILE_PX * TARGET_MPP
 BLANK_STD_THRESHOLD = 10.0
-SLIDE_ENCODER_HF = os.environ.get("TESERA_SLIDE_ENCODER", "hf_hub:prov-gigapath/prov-gigapath")
+TILE_ENCODER_HF = "hf_hub:prov-gigapath/prov-gigapath"
 SLIDE_ENCODER_NAME = "gigapath_slide_enc12l768d"
 SLIDE_ENCODER_IN_DIM = 1536
 
-SLIDE_ENCODER_HF = "hf_hub:prov-gigapath/prov-gigapath"
+SLIDE_ENCODER_HF = os.environ.get("TESERA_SLIDE_ENCODER", "hf_hub:prov-gigapath/prov-gigapath")
 EMBED_DIM_TILE = 1536
 EMBED_DIM_SLIDE = 768
 
