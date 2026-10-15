@@ -48,6 +48,12 @@ Slides may instead be enumerated in a text file, one path per line:
 python scripts/run_tesera.py --slides_file slides.txt --out_dir results/
 ```
 
+## Export slide-level embeddings
+
+```
+python scripts/export_slide_embeddings.py --out_dir results/
+```
+
 Common options:
 
 ```
