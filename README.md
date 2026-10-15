@@ -7,7 +7,7 @@ unsupervised morphologic subtype (TES1 or TES2), computes a continuous prognosti
 risk score, and reports model-estimated 1-, 3-, and 5-year overall survival. This
 repository provides the inference pipeline and accompanying per-slide visualizations.
 
-The paper has been published in Hepatology: https://www.ovid.com/jnls/hep/fulltext/10.1097/hep.0000000000001879~tesera-morphologic-subtyping-and-prognostic-stratification
+The paper has been published in *Hepatology*: https://www.ovid.com/jnls/hep/fulltext/10.1097/hep.0000000000001879~tesera-morphologic-subtyping-and-prognostic-stratification
 
 ## Requirements and installation
 
